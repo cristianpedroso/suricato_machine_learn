@@ -1,11 +1,11 @@
 from models import *
-
+from analysis.basic import BasicAnalysis
+from datetime import date
 
 if __name__ == "__main__":
     print("Hello")
-    print(Preciptation.query())
-    print(Inundation.query())
-    print(LunarPhase.position())
+    preciptation = Preciptation.query()
+    inundation = Inundation.query()
+    lunarPhase = LunarPhase.position()
 
-    for prec in Preciptation.query():
-        print(prec.date, prec.value)
+    BasicAnalysis.run(preciptation,inundation,datetime.datetime(1982,4,1,0,0,0))
