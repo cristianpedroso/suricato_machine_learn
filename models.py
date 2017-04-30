@@ -2,7 +2,15 @@ import db
 import math, decimal, datetime
 
 
-class Preciptation:
+class BaseModel:
+    @classmethod
+    def find_all(cls, sql):
+        with db.connect() as cur:
+            cur.execute(sql)
+            return (cls(row) for row in cur)
+
+
+class Preciptation(BaseModel):
     def __init__(self, db_row):
         (self.date, self.city, self.value) = db_row
         # (date, city, value) = db_row
@@ -11,13 +19,10 @@ class Preciptation:
     @classmethod
     def query(cls):
         sql = 'SELECT precipitation.`date` , city.name, precipitation.quantity FROM suricato.precipitation INNER JOIN suricato.city ON city.pk_city = precipitation.fk_city'
-
-        with db.connect() as cur:
-            cur.execute(sql)
-            return [cls(row) for row in cur]
+        return cls.find_all(sql)
 
 
-class Inundation:
+class Inundation(BaseModel):
     def __init__(self, db_row):
         (self.date, self.city) = db_row
         # (date, city, value) = db_row
@@ -26,10 +31,7 @@ class Inundation:
     @classmethod
     def query(cls):
         sql = 'SELECT inundation.date_hour , city.name FROM suricato.inundation INNER JOIN suricato.city ON city.pk_city = inundation.fk_city'
-
-        with db.connect() as cur:
-            cur.execute(sql)
-            return [cls(row) for row in cur]
+        return cls.find_all(sql)
 
 
 class LunarPhase:
